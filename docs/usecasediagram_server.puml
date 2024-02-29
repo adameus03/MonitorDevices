@@ -1,0 +1,53 @@
+@startuml
+left to right direction
+
+package "Application server" {
+  usecase "Zarejestruj użytkownika w systemie" as registerUserToSystem
+  usecase "Zaloguj użytkownika do systemu" as loginUserToSystem
+  usecase "Edytuj dane użytkownika" as editUserData
+  usecase "Pobierz dane użytkownika" as getUserData
+  usecase "Wyloguj użytkownika z systemu" as signoutUserFromSystem
+  usecase "Zarejestruj urządzenie monitorujące" as registerCamera
+  usecase "Wyrejestruj urządzenie monitorujące" as unregisterCamera
+  usecase "Edytuj konfigurację urządzenia" as configureCamera
+  usecase "Publikuj wersję oprogramowania wbudowanego" as publishFirmware
+  usecase "Listuj wersje oprogramowania wbudowanego dostępne dla sprzętu" as listAvailableFirmware
+  usecase "Zażądaj aktualizacji OTA" as otaUpdate
+  usecase "Pobierz status urządzenia" as getCameraStatus
+  usecase "Ustaw opcje reagowania systemu na zdarzenia" as systemReactionConfigure
+  usecase "Listuj zapisane klipy video" as listSavedVideoClips
+  usecase "Odbieraj transmisję z urządzenia monitorującego" as receiveVideoTransmission
+  usecase "(opcjonalne) Ustaw godziny dla harmonogramu trybu zużycia energii" as setEnergySaving
+  
+  usecase "Powiadom o zdarzeniu" as eventNotify
+  usecase "Transmituj strumień wideo" as transmitVideoStream
+  usecase "Żądaj weryfikacji zdarzenia i analizy obrazu" as requestAnalysis
+  
+}
+
+
+actor "Mobile application" << System >> as MobileApp
+actor "ESP32 firmware" << System >> as Camera
+
+MobileApp -- registerUserToSystem
+MobileApp -- loginUserToSystem
+MobileApp -- editUserData
+MobileApp -- getUserData
+MobileApp -- signoutUserFromSystem
+MobileApp -- registerCamera
+MobileApp -- unregisterCamera
+MobileApp -- configureCamera
+MobileApp -- publishFirmware
+MobileApp -- listAvailableFirmware
+MobileApp -- otaUpdate
+MobileApp -- getCameraStatus
+MobileApp -- systemReactionConfigure
+MobileApp -- listSavedVideoClips
+MobileApp -- receiveVideoTransmission
+MobileApp -- setEnergySaving
+
+Camera -- eventNotify
+Camera -- transmitVideoStream
+Camera -- requestAnalysis
+
+@enduml

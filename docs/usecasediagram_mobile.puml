@@ -1,0 +1,63 @@
+@startuml
+left to right direction
+together {
+  actor "Użytkownik niezalogowany" << User >> as userAnonymous
+  actor "Użytkownik zalogowany" << User >> as userLogged
+  actor "Administrator" << User >> as userAdmin
+  actor Użytkownik << User >> as userGeneral
+  userAdmin --|> userLogged
+  userLogged --|> userGeneral
+  userAnonymous --|> userGeneral
+}
+
+package "Mobile application" {
+  usecase "Zarejestruj użytkownika w systemie" as registerUserToSystem
+  usecase "Zaloguj użytkownika do systemu" as loginUserToSystem
+  usecase "Edytuj dane użytkownika" as editUserData
+  usecase "Wyświetl profil użytkownika" as showUserProfile
+  usecase "Wyloguj użytkownika z systemu" as signoutUserFromSystem
+  usecase "Zarejestruj urządzenie monitorujące" as registerCamera
+  usecase "Wyrejestruj urządzenie monitorujące" as unregisterCamera
+  usecase "Przeprowadź podstawową konfigurację urządzenia" as configureCamera
+  usecase "Publikuj wersję oprogramowania wbudowanego" as publishFirmware
+  usecase "Wyświetl wersje oprogramowania wbudowanego dostępne dla sprzętu" as listAvailableFirmware
+  usecase "Zdalnie aktualizuj firmware" as otaUpdate
+  usecase "Wyświetl status urządzenia" as showCameraStatus
+  usecase "Wyświetl powiadomienie" as showNotification
+  usecase "Edytuj ustawienia reagowania systemu na zdarzenia" as systemReactionConfigure
+  usecase "Przeglądaj zapisane klipy video" as exploreSavedVideoClips
+  usecase "Oglądaj transmisję z urządzenia monitorującego" as watchCamera
+  usecase "(opcjonalne) Zarządzaj godzinami harmonogramu trybu zużycia energii" as scheduleEnergySaving
+  
+  usecase "Powiadom o zdarzeniu" as eventNotify
+  usecase "Transmituj strumień wideo" as transmitVideoStream
+  
+  usecase "Pobierz dane dostępowe do sieci" as receiveNetworkCredentials
+}
+
+userAnonymous -- registerUserToSystem
+userAnonymous -- loginUserToSystem
+userLogged -- editUserData
+userLogged -- showUserProfile
+userLogged -- signoutUserFromSystem
+userLogged -- registerCamera
+userLogged -- unregisterCamera
+userLogged -- configureCamera
+userAdmin -- publishFirmware
+userLogged -- listAvailableFirmware
+userLogged -- otaUpdate
+userLogged -- showCameraStatus
+userLogged -- showNotification
+userLogged -- systemReactionConfigure
+userLogged -- exploreSavedVideoClips
+userLogged -- watchCamera
+userLogged -- scheduleEnergySaving
+
+actor "Application server" << System >> as Server
+actor "ESP32 firmware" << System >> as Camera
+
+Server -- eventNotify
+Server -- transmitVideoStream
+Camera -- receiveNetworkCredentials
+
+@enduml

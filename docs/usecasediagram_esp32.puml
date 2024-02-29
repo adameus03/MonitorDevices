@@ -1,0 +1,36 @@
+@startuml
+left to right direction
+
+package "ESP32 firmware" {
+  usecase "Przekaż dane dostępowe do sieci" as passNetworkCredentials
+  
+  usecase "Edytuj konfigurację urządzenia" as configureCamera
+  usecase "Wykonaj aktualizację OTA" as performOTAUpdate
+  usecase "Odbierz transmisję" as receiveVideoTransmission
+  usecase "Pobierz konfigurację" as getCameraConfig
+  usecase "Modyfikuj konfigurację" as alterCameraConfig
+  usecase "Odbierz żądanie analizy" as receiveAnalysisRequest
+  usecase "(opcjonalne) Ustaw tryb zużycia energii" as setEnergySaving
+  usecase "Powiadamiaj o zdarzenach" as eventNotify
+  usecase "Odbierz strumień wideo" as receiveVideoStream
+  
+}
+
+
+actor "Mobile application" << System >> as MobileApp
+actor "Application server" << System >> as Server
+
+MobileApp -- passNetworkCredentials
+
+Server -- configureCamera
+Server -- performOTAUpdate
+Server -- receiveVideoTransmission
+Server -- getCameraConfig
+Server -- alterCameraConfig
+Server -- receiveAnalysisRequest
+Server -- receiveAnalysisRequest
+Server -- eventNotify
+Server -- receiveVideoStream
+Server -- setEnergySaving
+
+@enduml
