@@ -1,3 +1,6 @@
 [submodule "esp32"]
 	path = esp32
 	url = ./esp32
+[submodule "server"]
+	path = server
+	url = ./server
