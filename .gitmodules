@@ -1,9 +1,9 @@
 [submodule "esp32"]
 	path = esp32
-	url = ./esp32
+	url = https://github.com/adameus03/udp_cam_human_recognition.git
 [submodule "server"]
 	path = server
-	url = ./server
+	url = https://github.com/adameus03/MonitorDevices-Server.git
 [submodule "mobileApp"]
 	path = mobileApp
-	url = ./mobileApp
+	url = https://github.com/adameus03/MonitorDevices-MobileApp.git
