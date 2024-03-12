@@ -1,0 +1,79 @@
+@startuml
+
+actor Użytkownik as User << user >> 
+entity "Mobile App" as MobileApp << system >>
+entity ESP32 as Esp32 << system >>
+entity Serwer as Server << system >>
+database Sqlite as Database << database >>
+
+activate User
+activate MobileApp
+activate Esp32
+activate Server
+activate Database
+
+'activate/deactivate with alts is pain in the a$$
+'activate User
+'activate MobileApp
+User -> MobileApp : Zarejestruj nowe urządzenie
+MobileApp -> User : Podaj dane dostępowe do sieci
+User --> MobileApp : Dane dostępowe do sieci
+'deactivate User
+'activate Esp32
+MobileApp -> Esp32 : Przekaż identyfikator użytkownika
+MobileApp -> Esp32 : Przekaż dane dostępowe do sieci
+'deactivate MobileApp
+'deactivate Esp32
+Esp32 -> Esp32 : Wykonaj test sieci
+alt netconn failed
+    'activate Server
+    'activate MobileApp
+    Esp32 -> MobileApp : Powiadom o niedostępności sieci
+    'deactivate Esp32
+    'activate User
+    MobileApp -> User : Powiadom o problemie z dostępem kamery do WiFi
+    'deactivate MobileApp
+    'deactivate User
+else netconn succeeded
+    'activate Esp32
+    'activate MobileApp
+    Esp32 -> MobileApp : Powiadom o poprawności danych dostępowych
+    'deactivate Esp32
+    MobileApp -> MobileApp : Aktualizuj widok oczekiwania
+    'deactivate MobileApp
+    'activate Esp32
+    Esp32 -> Server : Przekaż adres MAC i ID użytkownika
+    'deactivate Esp32
+    'activate Server
+    'activate Database
+    Server -> Database : Zweryfikuj czy użytkownik istnieje
+    Database --> Server : wartość logiczna
+    'deactivate Database
+    'deactivate Server
+    alt nonexistent uid
+    	'activate Server
+	Server -> Server : Zgłoś incydent w logach
+	'deactivate Server
+    else uid ok
+    	'activate Server
+    	'activate Database
+    	Server -> Database : Rejestruj urządzenie
+    	Server -> Database : Powiąż urządzenie z użytkownikiem
+    	'deactivate Database
+    	'activate MobileApp
+    	Server -> MobileApp : Powiadom o przypisaniu nowego urządzenia do użytkownika
+    	'deactivate Server
+    	'activate User
+    	MobileApp -> User : Powiadom o pomyślnym zarejestrowaniu urządzenia
+    	'deactivate MobileApp
+    	'deactivate User
+    end
+end
+
+deactivate User
+deactivate MobileApp
+deactivate Esp32
+deactivate Server
+deactivate Database
+
+@enduml

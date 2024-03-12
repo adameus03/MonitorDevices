@@ -6,14 +6,12 @@ package "ESP32 firmware" {
   
   usecase "Edytuj konfigurację urządzenia" as configureCamera
   usecase "Wykonaj aktualizację OTA" as performOTAUpdate
-  usecase "Odbierz transmisję" as receiveVideoTransmission
+  usecase "Odbierz strumieniową transmisję obrazu" as receiveVideoStream
   usecase "Pobierz konfigurację" as getCameraConfig
   usecase "Modyfikuj konfigurację" as alterCameraConfig
   usecase "Odbierz żądanie analizy" as receiveAnalysisRequest
   usecase "(opcjonalne) Ustaw tryb zużycia energii" as setEnergySaving
   usecase "Powiadamiaj o zdarzenach" as eventNotify
-  usecase "Odbierz strumień wideo" as receiveVideoStream
-  
 }
 
 
@@ -24,7 +22,7 @@ MobileApp -- passNetworkCredentials
 
 Server -- configureCamera
 Server -- performOTAUpdate
-Server -- receiveVideoTransmission
+'Server -- receiveVideoTransmission
 Server -- getCameraConfig
 Server -- alterCameraConfig
 Server -- receiveAnalysisRequest

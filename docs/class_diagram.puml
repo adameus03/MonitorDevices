@@ -1,0 +1,144 @@
+@startuml
+interface IntermoduleUserRelationshipManager {
+ +listUserRelationships(string targetUserID) : List<Relationship>
+}
+
+class UserRelationshipManager implements IntermoduleUserRelationshipManager {
+ +createRelationShip(User source, User target) : Relationship
+ +deleteRelationship(Relationship relationship) : bool
+ +listUserRelationships(string targetUserID) : List<Relationship>
+}
+
+class Relationship {
+ +firstUser : User
+ +secondUser : User
+ +destroy() : bool
+}
+
+interface IntermoduleNotificationManager {
+  +notifyUser(userID : string, Notification notification) : bool
+}
+
+class NotificationManager implements IntermoduleNotificationManager {
+  -serviceConnection : ServiceConnection
+  +notifyUser(userID : string, Notification notification) : bool
+  +registerUser(User user) : bool
+  +unregisterUser(User user) : bool
+}
+
+class Notification {
+  -id : string
+  -title : string
+  -message : string
+  +setTitle(string title) : void
+  +setMessage(string message) : void
+  +getTitle() : string
+  +getMessage() : string
+}
+
+interface GameUser implements LeaderboardUser {
+ getScore() : integer
+ setScore(integer score) : bool
+ getId() : string
+ getUsername() : string
+}
+
+interface LeaderboardUser {
+ getUsername() : string
+ getScore() : integer
+ getId() : string
+}
+
+class User implements GameUser, ForumUser {
+ -id : String
+ +getScore() : integer
+ +getId() : string
+ +setScore(integer score) : bool
+ +getUsername() : String
+ +setUsername(string username) : bool
+ +getEmail() : String
+ +setEmail(string email) : bool
+ +hasContributedToForum() : bool
+ +markAsForumContributor() : bool
+}
+
+interface IntermoduleUserManager {
+ getUsers(UserFiltrator filtrator) : List<User>
+ getUserBySessionKey(string token) : GameUser | ForumUser | LeaderboardUser
+ getEventStream(UMMEventFilter streamFilter) : EventStream
+}
+
+class UserManager implements IntermoduleUserManager {
+ +getUsers(UserFiltrator filtrator) : List<User>
+ +getUserBySessionKey(string token) : GameUser | ForumUser | LeaderboardUser
+ +createUser(string username, string email, string password) : User
+ +deleteUser(User user) : bool
+ +login(string username, string password) : User
+ +logout(User target) : void
+ +getEventStream(UMMEventFilter streamFilter) : EventStream
+}
+
+interface ForumUser {
+ getUsername() : string
+ getEmail() : string
+ getId() : string
+ hasContributedToForum() : bool
+}
+
+class ForumModuleMediator implements ForumMediator {
+ +registerPost(ForumUser user, object post @serializable) : bool
+ +unregisterPost(ForumUser user, object post @serializable) : bool
+ +postList(ForumUser user) : List<object>
+}
+
+
+interface Postable {
+    getCreator() : ForumUser,
+    getDataObject() : object,
+    getName() : string,
+    getIdentifier() : string
+} 
+note right: Implementowany przez moduł Forum
+
+interface ForumMediator {
+ registerPost(ForumUser user, Postable post) : string
+ unregisterPost(ForumUser user, Postable post) : bool
+ postList(ForumUser user) : List<Postable>
+}
+
+class UMMEventFilter {
+  -List<EventType> eventTypes
+  +addEventType(EventType eventType)
+  +removeEventType(UserEventType eventType)
+  +getEventTypes() : List<EventType> 
+}
+ 
+enum EventType {
+  +USER_LOGIN
+  +USER_LOGOUT
+  +USER_EXIT
+  +USERNAME_CHANGE
+  +USER_NO_DISTURB_CHANGE
+  +USER_CREATED
+  +USER_DELETED
+}
+
+
+
+UserRelationshipManager "1" *-- "0..*" Relationship : manages >
+NotificationManager *--> Notification
+NotificationManager "1" --> "0..*" User : notifies >
+Relationship "0..*" o--> "2" User: consists of >
+ForumModuleMediator "1" o--> "0..*" Postable : manages >
+
+UserManager "1" o--> "0..*" User : manages >
+
+ForumModuleMediator "0..1" --> "1" User: manages posts of
+
+IntermoduleUserManager --> UMMEventFilter : uses >
+
+
+
+
+UMMEventFilter "0..*" --> "1..7" EventType : specifies >
+@enduml

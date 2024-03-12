@@ -34,7 +34,7 @@ MobileApp -- loginUserToSystem
 MobileApp -- editUserData
 MobileApp -- getUserData
 MobileApp -- signoutUserFromSystem
-MobileApp -- registerCamera
+'MobileApp -- registerCamera
 MobileApp -- unregisterCamera
 MobileApp -- configureCamera
 MobileApp -- publishFirmware
@@ -49,5 +49,6 @@ MobileApp -- setEnergySaving
 Camera -- eventNotify
 Camera -- transmitVideoStream
 Camera -- requestAnalysis
+Camera -- registerCamera
 
 @enduml
