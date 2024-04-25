@@ -1,0 +1,40 @@
+@startuml
+
+actor Użytkownik as User << user >> 
+entity "Mobile App" as MobileApp << system >>
+entity Serwer as Server << system >>
+entity ESP32 as Esp32 << system >>
+
+activate User
+activate MobileApp
+activate Server
+activate Esp32
+
+
+'For example a check-in request
+Esp32 -> Server : TCP request segment (CID, CKEY, op)
+'Used to identify UDP packets
+Server --> Esp32 : Request session identifier (C-SID)
+
+User -> MobileApp : Konfiguruj rozdzielczość obrazu dla urządzenia
+MobileApp -> Server : Ustaw rozdzielczość obrazu dla urządzenia
+MobileApp -> Server : Przekaż CID urządzenia
+Server -> Server : Znajdź aktywne połączenie TCP
+alt tcpconn_not_found
+    Server -> MobileApp : Powiadom o niedostępności urządzenia
+    MobileApp -> User : Wyświetl informację o niedostępności urządzenia
+else tcpconn_found
+    Server -> Esp32 : Set configuration
+    Esp32 -> Server : Present configuration
+    Server -> MobileApp : Bieżąca konfiguracja urządzenia
+    MobileApp -> MobileApp : Aktualizuj widok
+    MobileApp -> User : Wyświetl informację o pomyślnym zaktualizowaniu ustawień
+end
+
+
+deactivate User
+deactivate MobileApp
+deactivate Server
+deactivate Esp32
+
+@enduml

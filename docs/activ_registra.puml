@@ -1,0 +1,15 @@
+@startuml
+start
+
+:Perform application initialization;
+if (/spiflash/registra.dat exists?) then (yes)
+else (no)
+  :Obtain credentials from early registration stage
+  and store registration data in /spiflash/registra.dat;
+endif
+
+:Connect to WiFi network using 
+  provided credentials and start CAMAU;
+
+stop
+@enduml

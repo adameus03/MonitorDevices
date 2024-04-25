@@ -1,0 +1,61 @@
+@startuml
+
+actor Użytkownik as User << user >> 
+entity "Mobile App" as MobileApp << system >>
+entity ESP32 as Esp32 << system >>
+entity Serwer as Server << system >>
+database Sqlite as Database << database >>
+
+activate User
+activate MobileApp
+activate Esp32
+activate Server
+activate Database
+
+User -> MobileApp : Zarejestruj nowe urządzenie
+MobileApp -> User : Podaj dane dostępowe do sieci
+User --> MobileApp : Dane dostępowe do sieci
+MobileApp -> Esp32 : Przekaż identyfikator użytkownika
+MobileApp -> Esp32 : Przekaż dane dostępowe do sieci
+Esp32 -> Esp32 : Wykonaj test sieci
+alt netconn failed
+    Esp32 -> MobileApp : Powiadom o niedostępności sieci
+    MobileApp -> User : Powiadom o problemie z dostępem kamery do WiFi
+else netconn succeeded
+    Esp32 -> MobileApp : Powiadom o poprawności danych dostępowych
+    MobileApp -> MobileApp : Aktualizuj widok oczekiwania
+    Esp32 -> Server : Przekaż adres MAC i ID użytkownika
+    Server -> Database : Zweryfikuj czy użytkownik istnieje
+    Database --> Server : wartość logiczna
+    alt nonexistent uid
+	Server -> Server : Zgłoś incydent w logach
+    else uid ok
+    	Server -> Database : Rejestruj urządzenie (UID, MAC, CID)
+    	Server -> Database : Powiąż urządzenie z użytkownikiem
+
+        Server -> Server : Wygeneruj CID
+        Server -> Esp32 : Przekaż CID
+        Server -> Server : Oczekuj na potwierdzenie rejestracji
+        alt registration NOT submitted by camera
+            Server -> MobileApp : Powiadom o niepowodzeniu rejestracji (brak odpowiedzi kamery)
+            MobileApp -> User : Zaproponuj ponowienie próby rejestracji urządzenia
+        else  registration submitted by camera
+            Esp32 -> Esp32 : Zapisz CID w pamięci flash
+            Esp32 -> Server : Potwierdź rejestrację + CKEY
+            Server -> Database : Zapisz skrót dla CKEY\n (camera passwd key)
+            Server -> MobileApp : Powiadom o przypisaniu nowego urządzenia do użytkownika
+            Server -> MobileApp : Przekaż CID
+            MobileApp -> User : Powiadom o pomyślnym zarejestrowaniu urządzenia
+        end
+    	
+    end
+end
+''''''''''''''''
+
+deactivate User
+deactivate MobileApp
+deactivate Esp32
+deactivate Server
+deactivate Database
+
+@enduml

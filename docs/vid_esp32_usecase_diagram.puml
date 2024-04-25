@@ -1,0 +1,32 @@
+@startuml
+
+entity ESP32 as Esp32 << system >>
+entity Serwer as Server << system >>
+database Storage as FS << filesystem >>
+
+activate Esp32
+activate Server
+activate FS
+
+'For example analysis request
+Esp32 -> Server : TCP request segment (CID, CKEY, op)
+'Used to identify UDP packets
+Server --> Esp32 : Request session identifier (C-SID)
+
+par
+    Esp32 -> Server : UDP mjpeg stream identified by C-SID
+else
+    Server -> Server : Receive UDP segments
+else
+    Server -> Server : Reassembly JFIF chunks
+else
+    Server -> Server : Feed mobile application server with JFIF frames
+else
+    Server -> FS : Append frames to stored video data
+end
+
+deactivate Esp32
+deactivate Server
+deactivate FS
+
+@enduml

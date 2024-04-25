@@ -1,0 +1,73 @@
+@startuml
+'skinparam linetype polyline
+'skinparam linetype ortho
+
+object "Platform HAL" as hal {
+	Hardware abstraction for controlling 
+	WiFi interface 
+}
+object "WiFi Driver" as wifiDriver {
+	Provides hardware abstraction wrapper 
+	for sending and receiving radio data
+}
+object "Network Stack (LwIP)" as lwip {
+	Provides network sockets API  
+}
+
+package "ESP32 Application TCP Core Architecture" as TCPCoreArchitecture<<Cloud>> {
+	object "RX task" as rxTask {
+		Receive TCP segments 
+		and put their representations the RX queue
+	}
+	object "TX task" as txTask {
+		Read the TX queue 
+		and transmit TCP segments 
+	}
+	object "Demux task" as demuxTask {
+		Read segments from RX queue, 
+		and place them in request queue or response 
+		queue depending on application-defined header  
+	}
+	object "TX queue" as txQueue {
+		Stores segments for transmission
+	}
+	object "RX queue" as rxQueue {
+		Stores received segments
+	}
+	object "Response queue" as respQueue {
+		Stores responses received from server
+	}
+	object "Request queue" as reqQueue {
+		Stores requests received from server
+	}
+}
+
+object "Request handler task" as reqHandlerTask {
+	Handles responses received from the server, 
+	and writes to TX queue as needed
+}
+object "Response handler task" as respHandlerTask {
+	Handles requests received from the server 
+	and writes to TX queue if neccessary
+}	
+
+lwip --> rxTask
+
+rxTask --> rxQueue
+rxQueue --> demuxTask
+demuxTask --> reqQueue
+demuxTask --> respQueue
+reqQueue --> reqHandlerTask
+respQueue --> respHandlerTask
+txQueue --> txTask
+
+reqHandlerTask --> txQueue
+respHandlerTask --> txQueue
+
+txTask --> lwip
+lwip --> wifiDriver
+wifiDriver --> lwip
+wifiDriver --> hal
+hal --> wifiDriver
+
+@enduml
