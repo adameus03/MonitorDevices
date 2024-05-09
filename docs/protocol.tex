@@ -1,0 +1,88 @@
+\documentclass[border=10pt,png]{standalone}
+\usepackage{bytefield}
+
+
+\begin{document}
+\iffalse
+    \begin{bytefield}[bitwidth=1.1em]{21}
+        \bitheader{0-20} \\
+        \begin{rightwordgroup}{Segment \\  header}
+            \bitbox{16}{CSID} & \bitbox{4}{datalen} & \bitbox{1}{op}
+        \end{rightwordgroup} \\
+        \bitbox{21}{application data section}
+    \end{bytefield}
+\fi
+
+\iffalse
+	\begin{bytefield}[bitwidth=1.1em]{32}
+        \bitheader{0-31} \\
+            \bitbox{16}{UID} & \bitbox{16}{CID} \\
+            \bitbox{16}{CKEY} & \bitbox{6}{MAC}
+    \end{bytefield}
+\fi
+
+\iffalse
+\begin{bytefield}[bitwidth=1.1em]{1}
+        \bitheader{0-0} \\
+            \bitbox{1}{sc}
+\end{bytefield}
+\fi
+
+\iffalse
+\begin{bytefield}[bitwidth=1.1em]{32}
+        \bitheader{0-31} \\
+            \bitbox{16}{UID} & \bitbox{16}{CID}
+\end{bytefield}
+\fi
+
+\iffalse
+\begin{bytefield}[bitwidth=1.1em]{8}
+        \bitheader{0-7} \\
+            \bitbox{4}{jpq} & \bitbox{1}{ve} & \bitbox{1}{he} & \bitbox{1}{f} & \bitbox{1}{r}
+\end{bytefield}
+\fi
+
+\iffalse
+\begin{bytefield}[bitwidth=1.1em]{8}
+        \bitheader{0-7} \\
+            \bitbox{4}{jpq} & \bitbox{1}{ve} & \bitbox{1}{he} & \bitbox{1}{f} & \bitbox{1}{r}
+\end{bytefield}
+\fi
+
+\iffalse
+\begin{bytefield}[bitwidth=1.1em]{29}
+        \bitheader{0-28} \\
+            \bitbox{4}{minjq} & \bitbox{4}{maxjq} & \bitbox{1}{nf} & \bitbox{20}{supported framesizes}
+\end{bytefield}
+\fi
+
+\iffalse
+\begin{bytefield}[bitwidth=1.1em]{8}
+        \bitheader{0-7} \\
+            \bitbox{4}{essi} & \bitbox{4}{esd}
+\end{bytefield}
+\fi
+
+\iffalse
+\begin{bytefield}[bitwidth=1.1em]{36}
+        \bitheader{0-35} \\
+            \bitbox{4}{nreset} & \bitbox{4}{slreset} & \bitbox{4}{slfupd} & \bitbox{4}{spflash} & \bitbox{20}{devname} \\
+            	\bitbox{20}{firmver} & \bitbox{1}{a} & \bitbox{1}{h} & \bitbox{1}{d}
+            
+\end{bytefield}
+\fi
+
+\begin{bytefield}[bitwidth=1.1em]{21}
+        \bitheader{0-20} \\
+        \begin{rightwordgroup}{Segment \\  description}
+            \bitbox{4}{pktid} & \bitbox{1}{t} & \bitbox{16}{CSID}
+        \end{rightwordgroup} \\
+        \wordbox[tlr]{1}{JFIF chunk} \\
+        \wordbox[blr]{1}{data} \\
+            
+\end{bytefield}
+
+
+
+
+\end{document}
